@@ -1,4 +1,4 @@
-package ua.pp.darknsoft.jwt_react;
+package ua.pp.darknsoft.jwt;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
