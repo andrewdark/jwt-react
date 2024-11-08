@@ -27,10 +27,10 @@ public class JwtUtils {
     @Value("${app.jwt.jwtAccessExpirationMs}")
     private long jwtAccessExpirationMs;
 
-    @Value("${app.jwt.jwtAccessSecret}")
+    @Value("${app.jwt.jwtRefreshSecret}")
     private String jwtRefreshSecret;
 
-    @Value("${app.jwt.jwtAccessExpirationMs}")
+    @Value("${app.jwt.jwtRefreshExpirationMs}")
     private long jwtRefreshExpirationMs;
 
     //JWT PUBLIC SECTION
