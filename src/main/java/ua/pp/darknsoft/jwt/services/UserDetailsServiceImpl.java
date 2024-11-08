@@ -11,13 +11,18 @@ import ua.pp.darknsoft.jwt.models.AppUser;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    // UserRepository userRepository;
+    private final AppUserService appUserService;
+
+    public UserDetailsServiceImpl(AppUserService appUserService) {
+        this.appUserService = appUserService;
+    }
+
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
-        AppUser user = new AppUser(1L, "dark", "dark");
+
+        AppUser user = appUserService.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
         return UserDetailsImpl.build(user);
     }
 }
