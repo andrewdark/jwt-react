@@ -17,4 +17,6 @@ public interface AppUserService {
    Page<AppUser> getAll(Pageable page);
    Page<AppUser> getAllEnabled(Pageable page);
 
+   AppUser getReference(Long id);
+
 }

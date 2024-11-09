@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.pp.darknsoft.jwt.dto.AuthenticationRequestDTO;
@@ -40,7 +42,19 @@ public class AuthController {
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@RequestBody AuthenticationRequestDTO authenticationRequest, HttpServletResponse response) throws Exception {
-        return ResponseEntity.ok().build();
+        try {
+            AuthenticationResponseDTO responseDTO = authService.authenticateUser(authenticationRequest);
+            //Set cookie with  RefreshToken
+            if (Objects.nonNull(responseDTO.getRefreshToken())) {
+                response.addCookie(getRefreshTokenCookie(responseDTO.getRefreshToken(), getRefreshMaxAge()));
+            }
+            return ResponseEntity.ok(responseDTO);
+
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
     }
 
     @PostMapping(value = "/logout")

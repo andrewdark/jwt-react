@@ -23,6 +23,21 @@ public class AppRefreshToken {
     private String browserFingerprint;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", unique=true)
     private AppUser appUser;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AppRefreshToken)) return false;
+
+        AppRefreshToken that = (AppRefreshToken) o;
+
+        return appUser.equals(that.appUser);
+    }
+
+    @Override
+    public int hashCode() {
+        return appUser.hashCode();
+    }
 }

@@ -18,12 +18,9 @@ import java.util.Optional;
 public class AppUserServiceImpl implements AppUserService {
 
     private final AppUserRepository appUserRepository;
-    private final PasswordEncoder bCryptPasswordEncoder;
 
-    @Lazy
-    public AppUserServiceImpl(AppUserRepository appUserRepository, PasswordEncoder bCryptPasswordEncoder) {
+    public AppUserServiceImpl(AppUserRepository appUserRepository) {
         this.appUserRepository = appUserRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @Override
@@ -54,6 +51,11 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
+    public AppUser getReference(Long id) {
+        return appUserRepository.getReferenceById(id);
+    }
+
+    @Override
     public Page<AppUser> getAllDisabled(Pageable page) {
         return appUserRepository.findAllByEnabled(false, page);
     }
@@ -63,7 +65,7 @@ public class AppUserServiceImpl implements AppUserService {
         AppUser savedUser = new AppUser();
         AppUser newAppUser = AppUser.builder()
                 .userName(registrationUser.getEmail().toLowerCase())
-                .encryptedPassword(bCryptPasswordEncoder.encode(registrationUser.getPassword()))
+                .encryptedPassword(registrationUser.getPassword())
                 .enabled(true)
                 .build();
 
