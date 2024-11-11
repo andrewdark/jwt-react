@@ -7,4 +7,5 @@ import ua.pp.darknsoft.jwt.dto.RegistrationResponseDTO;
 public interface AuthService {
     AuthenticationResponseDTO registration(RegistrationResponseDTO responseDTO);
     AuthenticationResponseDTO authenticateUser(AuthenticationRequestDTO authenticationRequestDTO);
+    void logout(String refreshToken);
 }

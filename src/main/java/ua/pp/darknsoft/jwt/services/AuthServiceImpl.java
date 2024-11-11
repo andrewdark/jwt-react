@@ -75,4 +75,13 @@ public class AuthServiceImpl implements AuthService {
         appRefreshTokenService.save(appRefreshToken);
         return authenticationResponseDTO;
     }
+
+    @Override
+    public void logout(String refreshToken) {
+        if(jwtUtils.validateJwtRefreshToken(refreshToken)){
+            String userName =  jwtUtils.getUserNameFromJwtRefreshToken(refreshToken);
+            appUserService.findByUsername(userName).ifPresent(appRefreshTokenService::deleteByUserId);
+        }
+
+    }
 }

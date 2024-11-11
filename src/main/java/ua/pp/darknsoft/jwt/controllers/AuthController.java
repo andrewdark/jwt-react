@@ -7,11 +7,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.pp.darknsoft.jwt.dto.AuthenticationRequestDTO;
 import ua.pp.darknsoft.jwt.dto.AuthenticationResponseDTO;
 import ua.pp.darknsoft.jwt.dto.RegistrationResponseDTO;
+import ua.pp.darknsoft.jwt.dto.security.UserDetailsImpl;
 import ua.pp.darknsoft.jwt.services.AuthService;
 
 import java.net.URI;
@@ -65,6 +67,8 @@ public class AuthController {
             refreshToken = requestRefreshTokenCookie;
             response.addCookie(getRefreshTokenCookie(null, 0)); //Delete Cookie
         }
+
+        authService.logout(refreshToken);
         return ResponseEntity.ok().build();
     }
 

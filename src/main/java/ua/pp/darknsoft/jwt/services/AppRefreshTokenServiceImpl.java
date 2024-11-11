@@ -2,10 +2,11 @@ package ua.pp.darknsoft.jwt.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.pp.darknsoft.jwt.dto.RefreshTokenDTO;
 import ua.pp.darknsoft.jwt.models.AppRefreshToken;
 import ua.pp.darknsoft.jwt.models.AppUser;
 import ua.pp.darknsoft.jwt.repositories.AppRefreshTokenRepository;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,5 +27,11 @@ public class AppRefreshTokenServiceImpl implements AppRefreshTokenService{
         }
 
         return appRefreshTokenRepository.save(dto);
+    }
+
+    @Override
+    public void deleteByUserId(AppUser appUser) {
+        Optional<AppRefreshToken> persistentAppRefreshTokenOpt = appRefreshTokenRepository.findAppRefreshTokenByAppUser(appUser);
+        persistentAppRefreshTokenOpt.ifPresent(appRefreshTokenRepository::delete);
     }
 }
