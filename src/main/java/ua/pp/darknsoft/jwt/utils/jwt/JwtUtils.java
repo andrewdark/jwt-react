@@ -60,7 +60,7 @@ public class JwtUtils {
     }
 
     public boolean validateJwtRefreshToken(String authToken) {
-        return validateJwtToken(authToken, jwtAccessSecret);
+        return validateJwtToken(authToken, jwtRefreshSecret);
     }
 
     //JWT PRIVATE SECTION
