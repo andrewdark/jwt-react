@@ -6,4 +6,6 @@ import ua.pp.darknsoft.jwt.models.AppUser;
 public interface AppRefreshTokenService {
     AppRefreshToken save(AppRefreshToken dto);
     void deleteByUserId(AppUser appUser);
+
+    boolean isOriginal(String refreshToken);
 }

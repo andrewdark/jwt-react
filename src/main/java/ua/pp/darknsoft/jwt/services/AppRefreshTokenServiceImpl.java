@@ -34,4 +34,9 @@ public class AppRefreshTokenServiceImpl implements AppRefreshTokenService{
         Optional<AppRefreshToken> persistentAppRefreshTokenOpt = appRefreshTokenRepository.findAppRefreshTokenByAppUser(appUser);
         persistentAppRefreshTokenOpt.ifPresent(appRefreshTokenRepository::delete);
     }
+
+    @Override
+    public boolean isOriginal(String refreshToken) {
+        return appRefreshTokenRepository.findAppRefreshTokenByRefreshToken(refreshToken).isPresent();
+    }
 }

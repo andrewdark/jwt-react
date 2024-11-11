@@ -17,12 +17,15 @@ import ua.pp.darknsoft.jwt.models.AppRefreshToken;
 import ua.pp.darknsoft.jwt.models.AppUser;
 import ua.pp.darknsoft.jwt.utils.jwt.JwtUtils;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 @Service
 @Transactional
 public class AuthServiceImpl implements AuthService {
 
     private final AppUserService appUserService;
-    private  final AppRefreshTokenService appRefreshTokenService;
+    private final AppRefreshTokenService appRefreshTokenService;
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder bCryptPasswordEncoder;
@@ -60,13 +63,13 @@ public class AuthServiceImpl implements AuthService {
                 .setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-         AuthenticationResponseDTO authenticationResponseDTO = AuthenticationResponseDTO.builder()
+        AuthenticationResponseDTO authenticationResponseDTO = AuthenticationResponseDTO.builder()
                 .userId(userDetails.getId())
                 .accessToken((jwtUtils.generateJwtAccessToken(userDetails.getUsername())))
                 .refreshToken(jwtUtils.generateJwtRefreshToken(userDetails.getUsername()))
                 .build();
 
-         AppUser appUser = appUserService.getReference(userDetails.getId());
+        AppUser appUser = appUserService.getReference(userDetails.getId());
         AppRefreshToken appRefreshToken = new AppRefreshToken();
         appRefreshToken.setRefreshToken((authenticationResponseDTO.getRefreshToken()));
         appRefreshToken.setAppUser(appUser);
@@ -78,10 +81,37 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void logout(String refreshToken) {
-        if(jwtUtils.validateJwtRefreshToken(refreshToken)){
-            String userName =  jwtUtils.getUserNameFromJwtRefreshToken(refreshToken);
+        if (jwtUtils.validateJwtRefreshToken(refreshToken)) {
+            String userName = jwtUtils.getUserNameFromJwtRefreshToken(refreshToken);
             appUserService.findByUsername(userName).ifPresent(appRefreshTokenService::deleteByUserId);
         }
 
+    }
+
+    @Override
+    public AuthenticationResponseDTO refresh(String refreshToken) {
+
+        if (jwtUtils.validateJwtRefreshToken(refreshToken)) {
+            String userName = jwtUtils.getUserNameFromJwtRefreshToken(refreshToken);
+            Optional<AppUser> appUserOptional = appUserService.findByUsername(userName);
+            if (appUserOptional.isPresent() && appRefreshTokenService.isOriginal(refreshToken)) {
+
+                AppUser appUser = appUserOptional.get();
+                AuthenticationResponseDTO authenticationResponseDTO = AuthenticationResponseDTO.builder()
+                        .userId(appUser.getUserId())
+                        .accessToken((jwtUtils.generateJwtAccessToken(appUser.getUserName())))
+                        .refreshToken(jwtUtils.generateJwtRefreshToken(appUser.getUserName()))
+                        .build();
+
+                AppRefreshToken appRefreshToken = new AppRefreshToken();
+                appRefreshToken.setRefreshToken((authenticationResponseDTO.getRefreshToken()));
+                appRefreshToken.setAppUser(appUser);
+                appRefreshToken.setIpAddress("172.0.0.1");
+                appRefreshToken.setBrowserFingerprint("NO-INFORMATION");
+                appRefreshTokenService.save(appRefreshToken);
+                return authenticationResponseDTO;
+            }
+        }
+        return null;
     }
 }

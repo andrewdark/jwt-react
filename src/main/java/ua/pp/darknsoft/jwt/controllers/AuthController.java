@@ -3,6 +3,7 @@ package ua.pp.darknsoft.jwt.controllers;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -73,10 +74,20 @@ public class AuthController {
     }
 
     @PostMapping(value = "/refresh")
-    public ResponseEntity<?> refresh() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> refresh(@CookieValue(value = "refresh-token", defaultValue = "") String requestRefreshTokenCookie,
+                                     HttpServletResponse response) {
+        String refreshToken = null;
+        if (Strings.isNotBlank(requestRefreshTokenCookie)) {
+            refreshToken = requestRefreshTokenCookie;
+            AuthenticationResponseDTO responseDTO = authService.refresh(refreshToken);
+            if (Objects.isNull(responseDTO)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            if (Objects.nonNull(responseDTO.getRefreshToken())) {
+                response.addCookie(getRefreshTokenCookie(responseDTO.getRefreshToken(), getRefreshMaxAge()));
+            }
+            return ResponseEntity.ok(responseDTO);
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
-
 
     //UTILS PRIVATE
     //TODO: consider duration with example.app.jwtRefreshExpirationMs

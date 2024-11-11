@@ -7,6 +7,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(indexes = @Index(columnList = "refresh_token"))
 public class AppRefreshToken {
 
     @Id
