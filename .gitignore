@@ -44,6 +44,7 @@ build/
 
 # production
 /build
+/src/main/resources/build
 
 # misc
 .DS_Store
