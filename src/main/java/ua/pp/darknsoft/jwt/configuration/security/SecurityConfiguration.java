@@ -31,7 +31,7 @@ public class SecurityConfiguration {
     @Autowired
     private AuthenticationJwtEntryPoint unauthorizedHandler;
 
-    private static final String[] WHITE_LIST_URL = {"/api/auth/**", "/", "/index", "/static/**"};
+    private static final String[] WHITE_LIST_URL = {"/api/auth/**", "/", "/#/**", "/index", "/static/**"};
 
     @Bean
     public AuthenticationJwtTokenFilter authenticationJwtTokenFilter() {

@@ -1,7 +1,12 @@
+import css from "./Header.module.css";
+
 export const Header = () => {
     return (
-        <div>
-
+        <div className={css.container}>
+            <header className={css.header}>
+                <div>Logo</div>
+                <div>User</div>
+            </header>
         </div>
     );
 };
