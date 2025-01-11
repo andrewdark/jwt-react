@@ -1,4 +1,5 @@
 import React from 'react';
+import "modern-normalize";
 import './index.css';
 import App from './App';
 import { createRoot } from "react-dom/client";
