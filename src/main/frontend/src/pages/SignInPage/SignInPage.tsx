@@ -1,7 +1,11 @@
+import  css from './SignInPage.module.css';
+import {SignInForm} from "../../components/SignInForm/SignInForm";
+
 export const SignInPage = () => {
     return (
-        <div>
-            <h1>Please, SIGN IN</h1>
+        <div className={css.loginWrap}>
+            <h2>Login</h2>
+            <SignInForm />
         </div>
     );
 };
