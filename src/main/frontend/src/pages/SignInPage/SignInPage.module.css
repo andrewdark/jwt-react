@@ -13,3 +13,10 @@ h2 {
     margin-top: 10px;
     color: #34495e;
 }
+
+.link {
+    display: block;
+    text-align: center;
+    font-size: 10px;
+    color: #3498db;
+}

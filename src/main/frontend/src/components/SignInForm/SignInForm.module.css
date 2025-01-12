@@ -1,8 +1,7 @@
 .form {
     padding-top: 20px;
 }
-input[type="text"],
-input[type="password"],
+.fInput,
 button {
     width: 80%;
     margin-left: 10%;
@@ -13,21 +12,15 @@ button {
     -moz-outline-style: none;
 }
 
-input[type="text"],
-input[type="password"] {
+.fInput {
     border: 1px solid #bbb;
     padding: 0 0 0 10px;
     font-size: 14px;
 }
-input[type="text"]:focus,input[type="password"]:focus {
+.fInput:focus {
      border: 1px solid #3498db;
 }
 
-a {
-    text-align: center;
-    font-size: 10px;
-    color: #3498db;
-}
 p{
     padding-bottom: 10px;
 }

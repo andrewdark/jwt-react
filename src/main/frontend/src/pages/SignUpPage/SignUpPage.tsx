@@ -1,13 +1,15 @@
+import css from "./SignUpPage.module.css";
+import {NavLink} from "react-router-dom";
+import {SignUpForm} from "../../components/SignUpForm/SignUpForm";
+
 export const SignUpPage = () => {
     return (
-        <div>
-            <h1>Please, SIGN UP</h1>
-            <div>
-                NAME: _______ <br/>
-                SNAME: _______ <br/>
-                EMAIL: _______ <br/>
-                PassWd: ______ <br/>
-            </div>
+        <div className={css.loginWrap}>
+            <h2>Register</h2>
+            <SignUpForm />
+            <NavLink className={css.link} to={`/sign-in`}>
+                Already registered? Login
+            </NavLink>
         </div>
     );
 };

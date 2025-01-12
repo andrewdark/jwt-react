@@ -15,9 +15,9 @@ export const SignInForm = () => {
     return (
         <Formik initialValues={initialValues} onSubmit={handleSubmit}>
             <Form className={css.form}>
-                <Field type="text" name="userName" />
-                <Field type="password" name="password" />
-                <button type="submit">Submit</button>
+                <Field className={css.fInput} type="text" name="userName" />
+                <Field className={css.fInput} type="password" name="password" />
+                <button className={css.fInput} type="submit">Submit</button>
             </Form>
         </Formik>
     );
