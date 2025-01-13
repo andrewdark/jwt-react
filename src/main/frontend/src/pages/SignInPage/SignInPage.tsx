@@ -1,12 +1,20 @@
 import  css from './SignInPage.module.css';
 import {SignInForm} from "../../components/SignInForm/SignInForm";
 import {NavLink} from "react-router-dom";
+import {useAppDispatch} from "../../hooks/redux";
+import {ISignInRequest} from "../../models/ISignInRequest";
+import {logIn} from "../../redux/auth/operations";
 
 export const SignInPage = () => {
+    const dispatch = useAppDispatch();
+
+    const loginHandler = (credentials:ISignInRequest) =>{
+        dispatch(logIn(credentials));
+    }
     return (
         <div className={css.loginWrap}>
             <h2>Login</h2>
-            <SignInForm />
+            <SignInForm loginHandler={loginHandler}/>
             <NavLink className={css.link} to={`/sign-up`}>
                 Don't have an account? Register
             </NavLink>

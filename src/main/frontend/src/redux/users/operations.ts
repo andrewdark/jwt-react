@@ -1,4 +1,4 @@
-import {createAsyncThunk, PayloadAction} from "@reduxjs/toolkit";
+import {createAsyncThunk} from "@reduxjs/toolkit";
 import {$api} from "../../http";
 import {IUser} from "../../models/IUser";
 import {IPageable} from "../../models/IPageable";

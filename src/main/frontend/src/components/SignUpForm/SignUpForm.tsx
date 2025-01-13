@@ -2,8 +2,11 @@ import {Formik, Form, Field, ErrorMessage} from 'formik';
 import * as Yup from "yup";
 import {useId} from "react";
 import css from './SignUpForm.module.css';
+import {useAppDispatch} from "../../hooks/redux";
+import {register} from "../../redux/auth/operations";
+import {ISignUpRequest} from "../../models/ISignUpRequest";
 
-const initialValues = {
+const initialValues:ISignUpRequest = {
     firstName: "",
     lastName: "",
     email: "",
@@ -20,14 +23,16 @@ const SignUpSchema = Yup.object().shape({
 });
 
 export const SignUpForm = () => {
+    const dispatch = useAppDispatch();
     const firstNameFieldId = useId();
     const lastNameFieldId = useId();
     const emailFieldId = useId();
     const passwordFieldId = useId();
     const confirmPasswordFieldId = useId();
 
-    const handleSubmit = (values: any, actions: any) => {
+    const handleSubmit = (values: ISignUpRequest, actions: any) => {
         console.log(values);
+        dispatch(register(values))
         actions.resetForm();
     };
 

@@ -1,7 +1,9 @@
 import {IUser} from "../../models/IUser";
 import {createSlice} from "@reduxjs/toolkit";
+import {logIn, logOut, refreshUser, register} from "./operations";
 
-interface AuthState{
+interface AuthState {
+    userId: null | number,
     user: null | IUser,
     accessToken: null | string,
     isLoggedIn: boolean,
@@ -9,7 +11,9 @@ interface AuthState{
     isLoading: boolean,
     error: null | string,
 }
-const initialState:AuthState = {
+
+const initialState: AuthState = {
+    userId: null,
     user: null,
     accessToken: null,
     isLoggedIn: false,
@@ -20,8 +24,47 @@ const initialState:AuthState = {
 export const authSlice = createSlice({
     name: "auth",
     initialState,
-    reducers: {}
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(register.fulfilled, (state: AuthState, action) => {
+                state.user = action.payload.user;
+                state.accessToken = action.payload.accessToken;
+                state.isLoggedIn = true;
+            })
+            .addCase(logIn.fulfilled, (state: AuthState, action) => {
+                state.userId = action.payload.userId;
+                state.user = <IUser>{
+                    userId: 0,
+                    firstName: '',
+                    lastName: '',
+                    email: ''
+                };
+                state.accessToken = action.payload.accessToken;
+                state.isLoggedIn = true;
+            })
+            .addCase(logOut.fulfilled, (state: AuthState) => {
+                state = initialState;
+            })
+            .addCase(refreshUser.pending, (state: AuthState) => {
+                state.isRefreshing = true;
+            })
+            .addCase(refreshUser.fulfilled, (state: AuthState, action) => {
+                state.userId = action.payload.userId;
+                state.user = <IUser>{
+                    userId: 0,
+                    firstName: '',
+                    lastName: '',
+                    email: ''
+                };
+                state.isLoggedIn = true;
+                state.isRefreshing = false;
+            })
+            .addCase(refreshUser.rejected, (state: AuthState) => {
+                state.isRefreshing = false;
+            });
+    },
 
 })
 
-export const userReducer = authSlice.reducer;
+export const authReducer = authSlice.reducer;

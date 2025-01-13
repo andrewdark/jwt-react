@@ -31,7 +31,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping(value = "/registration")
+    @PostMapping(value = "/signup")
     public ResponseEntity<?> registration(@Valid @RequestBody RegistrationRequestDTO registrationRequestDTO, HttpServletResponse response) {
         if (Objects.isNull(registrationRequestDTO.getFirstName()) || Objects.isNull(registrationRequestDTO.getLastName()) || Objects.isNull(registrationRequestDTO.getEmail()) || Objects.isNull(registrationRequestDTO.getPassword())) {
             return ResponseEntity.badRequest()
@@ -47,7 +47,7 @@ public class AuthController {
         return ResponseEntity.ok(authenticationResponseDTO);
     }
 
-    @PostMapping(value = "/login")
+    @PostMapping(value = "/signin")
     public ResponseEntity<?> login(@Valid @RequestBody AuthenticationRequestDTO authenticationRequest, HttpServletResponse response) throws Exception {
         try {
             AuthenticationResponseDTO responseDTO = authService.authenticateUser(authenticationRequest);
