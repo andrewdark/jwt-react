@@ -1,6 +1,7 @@
 import {IUser} from "../../models/IUser";
-import {createSlice} from "@reduxjs/toolkit";
+import {ActionReducerMapBuilder, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {fetchUsers} from "./operations";
+import {IPageable} from "../../models/IPageable";
 
 interface UserState {
     users: IUser[];
@@ -26,10 +27,10 @@ export const userSlice = createSlice({
     name: "user",
     initialState,
     reducers: {},
-    extraReducers: (builder) => {
+    extraReducers: (builder: ActionReducerMapBuilder<UserState>) => {
         builder
             .addCase(fetchUsers.pending, handlePending)
-            .addCase(fetchUsers.fulfilled, (state, action) => {
+            .addCase(fetchUsers.fulfilled, (state: UserState, action: PayloadAction<IPageable<IUser>>) => {
                 state.isLoading = false;
                 state.error = '';
                 state.users = action.payload.content;
