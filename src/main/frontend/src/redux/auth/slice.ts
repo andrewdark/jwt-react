@@ -2,7 +2,7 @@ import {IUser} from "../../models/IUser";
 import {createSlice} from "@reduxjs/toolkit";
 
 interface AuthState{
-    user: IUser,
+    user: null | IUser,
     accessToken: null | string,
     isLoggedIn: boolean,
     isRefreshing: boolean,
@@ -10,12 +10,7 @@ interface AuthState{
     error: null | string,
 }
 const initialState:AuthState = {
-    user: {
-        id: 0,
-        userName: '',
-        email: ''
-
-    },
+    user: null,
     accessToken: null,
     isLoggedIn: false,
     isRefreshing: false,
