@@ -8,15 +8,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.Authentication;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.pp.darknsoft.jwt.dto.AuthenticationRequestDTO;
 import ua.pp.darknsoft.jwt.dto.AuthenticationResponseDTO;
-import ua.pp.darknsoft.jwt.dto.RegistrationResponseDTO;
-import ua.pp.darknsoft.jwt.dto.security.UserDetailsImpl;
+import ua.pp.darknsoft.jwt.dto.RegistrationRequestDTO;
 import ua.pp.darknsoft.jwt.services.AuthService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -32,11 +32,15 @@ public class AuthController {
     }
 
     @PostMapping(value = "/registration")
-    public ResponseEntity<?> registration(@RequestBody RegistrationResponseDTO registrationResponseDTO, HttpServletResponse response) {
-        AuthenticationResponseDTO authenticationResponseDTO = authService.registration(registrationResponseDTO);
+    public ResponseEntity<?> registration(@Valid @RequestBody RegistrationRequestDTO registrationRequestDTO, HttpServletResponse response) {
+        if (Objects.isNull(registrationRequestDTO.getFirstName()) || Objects.isNull(registrationRequestDTO.getLastName()) || Objects.isNull(registrationRequestDTO.getEmail()) || Objects.isNull(registrationRequestDTO.getPassword())) {
+            return ResponseEntity.badRequest()
+                    .body("Error: All field required");
+        }
+        AuthenticationResponseDTO authenticationResponseDTO = authService.registration(registrationRequestDTO);
         if (Objects.isNull(authenticationResponseDTO)) return ResponseEntity.badRequest()
                 .body("Error: Username is already taken!");
-        //Set cookie with  RefreshToken
+        //TODO: Set cookie with  RefreshToken ???????????????????????????????????????
         if (Objects.nonNull(authenticationResponseDTO.getRefreshToken())) {
             response.addCookie(getRefreshTokenCookie(authenticationResponseDTO.getRefreshToken(), getRefreshMaxAge()));
         }
@@ -44,7 +48,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticationRequestDTO authenticationRequest, HttpServletResponse response) throws Exception {
+    public ResponseEntity<?> login(@Valid @RequestBody AuthenticationRequestDTO authenticationRequest, HttpServletResponse response) throws Exception {
         try {
             AuthenticationResponseDTO responseDTO = authService.authenticateUser(authenticationRequest);
             //Set cookie with  RefreshToken

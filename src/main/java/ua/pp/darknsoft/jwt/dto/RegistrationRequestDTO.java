@@ -2,6 +2,7 @@ package ua.pp.darknsoft.jwt.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 
@@ -10,9 +11,15 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthenticationRequestDTO {
+public class RegistrationRequestDTO {
+    @NotNull(message = "should not be null")
+    private String firstName;
+    @NotBlank(message = "Name is mandatory")
+    private String lastName;
     @NotNull
     private String email;
     @NotNull
     private String password;
+
+
 }

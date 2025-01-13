@@ -1,6 +1,5 @@
 package ua.pp.darknsoft.jwt.services;
 
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -10,14 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.pp.darknsoft.jwt.dto.AuthenticationRequestDTO;
 import ua.pp.darknsoft.jwt.dto.AuthenticationResponseDTO;
-import ua.pp.darknsoft.jwt.dto.RefreshTokenDTO;
-import ua.pp.darknsoft.jwt.dto.RegistrationResponseDTO;
+import ua.pp.darknsoft.jwt.dto.RegistrationRequestDTO;
 import ua.pp.darknsoft.jwt.dto.security.UserDetailsImpl;
 import ua.pp.darknsoft.jwt.models.AppRefreshToken;
 import ua.pp.darknsoft.jwt.models.AppUser;
 import ua.pp.darknsoft.jwt.utils.jwt.JwtUtils;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -39,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthenticationResponseDTO registration(RegistrationResponseDTO responseDTO) {
+    public AuthenticationResponseDTO registration(RegistrationRequestDTO responseDTO) {
         if (appUserService.findByUsername(responseDTO.getEmail().toLowerCase()).isPresent()) {
             return null;
         }
@@ -49,15 +46,15 @@ public class AuthServiceImpl implements AuthService {
 
         AuthenticationResponseDTO response = AuthenticationResponseDTO.builder()
                 .userId(user.getUserId())
-                .accessToken(jwtUtils.generateJwtAccessToken(user.getUserName()))
-                .refreshToken(jwtUtils.generateJwtRefreshToken(user.getUserName()))
+                .accessToken(jwtUtils.generateJwtAccessToken(user.getEmail()))
+                .refreshToken(jwtUtils.generateJwtRefreshToken(user.getEmail()))
                 .build();
         return response;
     }
 
     @Override
     public AuthenticationResponseDTO authenticateUser(AuthenticationRequestDTO authenticationRequestDTO) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequestDTO.getUserName().toLowerCase(), authenticationRequestDTO.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequestDTO.getEmail().toLowerCase(), authenticationRequestDTO.getPassword()));
 
         SecurityContextHolder.getContext()
                 .setAuthentication(authentication);
@@ -99,8 +96,8 @@ public class AuthServiceImpl implements AuthService {
                 AppUser appUser = appUserOptional.get();
                 AuthenticationResponseDTO authenticationResponseDTO = AuthenticationResponseDTO.builder()
                         .userId(appUser.getUserId())
-                        .accessToken((jwtUtils.generateJwtAccessToken(appUser.getUserName())))
-                        .refreshToken(jwtUtils.generateJwtRefreshToken(appUser.getUserName()))
+                        .accessToken((jwtUtils.generateJwtAccessToken(appUser.getEmail())))
+                        .refreshToken(jwtUtils.generateJwtRefreshToken(appUser.getEmail()))
                         .build();
 
                 AppRefreshToken appRefreshToken = new AppRefreshToken();

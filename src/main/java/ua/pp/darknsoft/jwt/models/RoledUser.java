@@ -10,7 +10,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "ROLE_USER")
 @org.hibernate.annotations.Immutable
-public class RoledUser implements Serializable{
+public class RoledUser implements Serializable {
 
     @Embeddable
     public static class Id implements Serializable {

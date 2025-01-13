@@ -8,7 +8,7 @@ import ua.pp.darknsoft.jwt.models.AppUser;
 import java.util.Optional;
 
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
-    Optional<AppUser> findByUserName(String userName);
-    Boolean existsByUserName(String userName);
+    Optional<AppUser> findByEmail(String email);
+    Boolean existsByEmail(String email);
     Page<AppUser> findAllByEnabled(Boolean enabled, Pageable pageable);
 }

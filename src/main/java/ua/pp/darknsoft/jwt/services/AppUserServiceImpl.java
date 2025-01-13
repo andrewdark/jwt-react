@@ -1,13 +1,10 @@
 package ua.pp.darknsoft.jwt.services;
 
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.pp.darknsoft.jwt.dto.RegistrationResponseDTO;
+import ua.pp.darknsoft.jwt.dto.RegistrationRequestDTO;
 import ua.pp.darknsoft.jwt.models.AppUser;
 import ua.pp.darknsoft.jwt.repositories.AppUserRepository;
 
@@ -24,19 +21,19 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public Optional<AppUser> findByUsername(String userName) {
-        return appUserRepository.findByUserName(userName);
+    public Optional<AppUser> findByUsername(String email) {
+        return appUserRepository.findByEmail(email);
     }
 
     @Override
-    public Boolean isExistsByUserName(String userName) {
-        return appUserRepository.existsByUserName(userName.toLowerCase());
+    public Boolean isExistsByUserName(String email) {
+        return appUserRepository.existsByEmail(email.toLowerCase());
     }
 
     @Transactional(readOnly = true)
     @Override
     public Boolean isExists(AppUser appUser) {
-        return appUserRepository.existsByUserName(appUser.getUserName().toLowerCase());
+        return appUserRepository.existsByEmail(appUser.getEmail().toLowerCase());
     }
 
     @Transactional(readOnly = true)
@@ -61,10 +58,12 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public AppUser createAppUser(RegistrationResponseDTO registrationUser) {
+    public AppUser createAppUser(RegistrationRequestDTO registrationUser) {
         AppUser savedUser = new AppUser();
         AppUser newAppUser = AppUser.builder()
-                .userName(registrationUser.getEmail().toLowerCase())
+                .firstName(registrationUser.getFirstName().toUpperCase())
+                .lastName(registrationUser.getLastName().toUpperCase())
+                .email(registrationUser.getEmail().toLowerCase())
                 .encryptedPassword(registrationUser.getPassword())
                 .enabled(true)
                 .build();

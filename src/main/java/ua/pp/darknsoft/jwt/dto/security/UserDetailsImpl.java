@@ -28,7 +28,7 @@ public class UserDetailsImpl implements UserDetails {
 
     public static UserDetailsImpl build(AppUser user) {
 
-        return new UserDetailsImpl(user.getUserId(), user.getUserName(), user.getEncryptedPassword());
+        return new UserDetailsImpl(user.getUserId(), user.getEmail(), user.getEncryptedPassword());
     }
 
     public Long getId() {
