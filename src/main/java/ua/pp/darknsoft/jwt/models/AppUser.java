@@ -1,5 +1,6 @@
 package ua.pp.darknsoft.jwt.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -37,6 +38,7 @@ public class AppUser implements Serializable {
 
     @Column(name = "encrypted_password", length = 128, nullable = false)
     @Pattern(regexp = "(?=^.{8,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$")
+    @JsonIgnore
     private String encryptedPassword;
     @Column(name = "enabled", nullable = false)
     private Boolean enabled = true;
