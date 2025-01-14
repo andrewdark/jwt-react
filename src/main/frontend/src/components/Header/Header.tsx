@@ -1,20 +1,17 @@
 import css from "./Header.module.css";
-import { HiUser } from "react-icons/hi";
-import {NavLink} from "react-router-dom";
+import {useSelector} from "react-redux";
+import {selectIsLoggedIn} from "../../redux/auth/selectors";
+import {AuthMenu} from "../AuthMenu/AuthMenu";
+import {AuthNav} from "../AuthNav/AuthNav";
 
 export const Header = () => {
+    const isLoggedIn = useSelector(selectIsLoggedIn);
     return (
         <div className={css.container}>
             <header className={css.header}>
                 <div>Logo</div>
                 <div>
-                    <HiUser className="my-icon" size="24" />
-                    <NavLink className={css.link} to={`/sign-in`}>
-                        Login
-                    </NavLink>
-                    <NavLink className={css.link} to={`/sign-up`}>
-                        Register
-                    </NavLink>
+                    {isLoggedIn ? <AuthMenu/> : <AuthNav/>}
                 </div>
             </header>
         </div>

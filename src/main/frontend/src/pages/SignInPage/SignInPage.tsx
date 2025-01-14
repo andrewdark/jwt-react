@@ -2,7 +2,7 @@ import  css from './SignInPage.module.css';
 import {SignInForm} from "../../components/SignInForm/SignInForm";
 import {NavLink} from "react-router-dom";
 import {useAppDispatch} from "../../hooks/redux";
-import {ISignInRequest} from "../../models/ISignInRequest";
+import {ISignInRequest} from "../../models/auth/ISignInRequest";
 import {logIn} from "../../redux/auth/operations";
 
 export const SignInPage = () => {

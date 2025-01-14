@@ -4,7 +4,7 @@ import {useId} from "react";
 import css from './SignUpForm.module.css';
 import {useAppDispatch} from "../../hooks/redux";
 import {register} from "../../redux/auth/operations";
-import {ISignUpRequest} from "../../models/ISignUpRequest";
+import {ISignUpRequest} from "../../models/auth/ISignUpRequest";
 
 const initialValues:ISignUpRequest = {
     firstName: "",
@@ -31,7 +31,6 @@ export const SignUpForm = () => {
     const confirmPasswordFieldId = useId();
 
     const handleSubmit = (values: ISignUpRequest, actions: any) => {
-        console.log(values);
         dispatch(register(values))
         actions.resetForm();
     };

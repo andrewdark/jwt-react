@@ -1,8 +1,8 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {$api} from "../../http";
 import {RootState} from "../store";
-import {ISignUpRequest} from "../../models/ISignUpRequest";
-import {ISignInRequest} from "../../models/ISignInRequest";
+import {ISignUpRequest} from "../../models/auth/ISignUpRequest";
+import {ISignInRequest} from "../../models/auth/ISignInRequest";
 
 // Utility to add JWT
 const setAuthHeader = (token: string) => {
@@ -24,7 +24,7 @@ export const register = createAsyncThunk(
         try {
             const res = await $api.post('/auth/signup', credentials);
             // After successful registration, add the token to the HTTP header
-            setAuthHeader(res.data.token);
+            setAuthHeader(res.data.accessToken);
             return res.data;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.message);
@@ -42,7 +42,7 @@ export const logIn = createAsyncThunk(
         try {
             const res = await $api.post('/auth/signin', credentials);
             // After successful login, add the token to the HTTP header
-            setAuthHeader(res.data.token);
+            setAuthHeader(res.data.accessToken);
             return res.data;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.message);

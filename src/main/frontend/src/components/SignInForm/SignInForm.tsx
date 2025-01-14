@@ -1,6 +1,6 @@
 import {Formik, Form, Field} from 'formik';
 import css from './SignInForm.module.css';
-import {ISignInRequest} from "../../models/ISignInRequest";
+import {ISignInRequest} from "../../models/auth/ISignInRequest";
 
 const initialValues:ISignInRequest = {
     email: "",

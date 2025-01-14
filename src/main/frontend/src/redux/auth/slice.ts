@@ -44,7 +44,11 @@ export const authSlice = createSlice({
                 state.isLoggedIn = true;
             })
             .addCase(logOut.fulfilled, (state: AuthState) => {
-                state = initialState;
+                state.user = initialState.user;
+                state.userId = initialState.userId;
+                state.accessToken = initialState.accessToken;
+                state.isLoggedIn = initialState.isLoggedIn;
+                state.isRefreshing = initialState.isRefreshing;
             })
             .addCase(refreshUser.pending, (state: AuthState) => {
                 state.isRefreshing = true;
