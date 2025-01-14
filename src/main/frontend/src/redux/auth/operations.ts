@@ -3,6 +3,8 @@ import {$api} from "../../http";
 import {RootState} from "../store";
 import {ISignUpRequest} from "../../models/auth/ISignUpRequest";
 import {ISignInRequest} from "../../models/auth/ISignInRequest";
+import {ISignUpResponse} from "../../models/auth/ISignUpResponse";
+import {ISignInResponse} from "../../models/auth/ISignInResponse";
 
 // Utility to add JWT
 const setAuthHeader = (token: string) => {
@@ -22,7 +24,7 @@ export const register = createAsyncThunk(
     'auth/register',
     async (credentials:ISignUpRequest, thunkAPI) => {
         try {
-            const res = await $api.post('/auth/signup', credentials);
+            const res = await $api.post<ISignUpResponse>('/auth/signup', credentials);
             // After successful registration, add the token to the HTTP header
             setAuthHeader(res.data.accessToken);
             return res.data;
@@ -40,7 +42,7 @@ export const logIn = createAsyncThunk(
     'auth/login',
     async (credentials:ISignInRequest, thunkAPI) => {
         try {
-            const res = await $api.post('/auth/signin', credentials);
+            const res = await $api.post<ISignInResponse>('/auth/signin', credentials);
             // After successful login, add the token to the HTTP header
             setAuthHeader(res.data.accessToken);
             return res.data;

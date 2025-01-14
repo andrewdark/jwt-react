@@ -1,6 +1,8 @@
 import {IUser} from "../../models/IUser";
-import {createSlice} from "@reduxjs/toolkit";
+import {ActionReducerMapBuilder, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {logIn, logOut, refreshUser, register} from "./operations";
+import {ISignInResponse} from "../../models/auth/ISignInResponse";
+import {ISignUpResponse} from "../../models/auth/ISignUpResponse";
 
 interface AuthState {
     userId: null | number,
@@ -25,21 +27,17 @@ export const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {},
-    extraReducers: (builder) => {
+    extraReducers: (builder:ActionReducerMapBuilder<AuthState>) => {
         builder
-            .addCase(register.fulfilled, (state: AuthState, action) => {
+            .addCase(register.fulfilled, (state: AuthState, action:PayloadAction<ISignUpResponse>) => {
+                state.userId =action.payload.userId;
                 state.user = action.payload.user;
                 state.accessToken = action.payload.accessToken;
                 state.isLoggedIn = true;
             })
-            .addCase(logIn.fulfilled, (state: AuthState, action) => {
+            .addCase(logIn.fulfilled, (state: AuthState, action:PayloadAction<ISignInResponse>) => {
                 state.userId = action.payload.userId;
-                state.user = <IUser>{
-                    userId: 0,
-                    firstName: '',
-                    lastName: '',
-                    email: ''
-                };
+                state.user = action.payload.user;
                 state.accessToken = action.payload.accessToken;
                 state.isLoggedIn = true;
             })
@@ -55,12 +53,7 @@ export const authSlice = createSlice({
             })
             .addCase(refreshUser.fulfilled, (state: AuthState, action) => {
                 state.userId = action.payload.userId;
-                state.user = <IUser>{
-                    userId: 0,
-                    firstName: '',
-                    lastName: '',
-                    email: ''
-                };
+                state.user = action.payload.user;
                 state.isLoggedIn = true;
                 state.isRefreshing = false;
             })

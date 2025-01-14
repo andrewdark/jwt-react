@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.pp.darknsoft.jwt.dto.AppUserDTO;
 import ua.pp.darknsoft.jwt.dto.AuthenticationRequestDTO;
 import ua.pp.darknsoft.jwt.dto.AuthenticationResponseDTO;
 import ua.pp.darknsoft.jwt.dto.RegistrationRequestDTO;
@@ -43,11 +44,12 @@ public class AuthServiceImpl implements AuthService {
         responseDTO.setEmail(responseDTO.getEmail().toLowerCase());
         responseDTO.setPassword(bCryptPasswordEncoder.encode(responseDTO.getPassword()));
         AppUser user = appUserService.createAppUser(responseDTO);
-
+        AppUserDTO appUserDTO = AppUserDTO.builder().userId(user.getUserId()).email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).build();
         AuthenticationResponseDTO response = AuthenticationResponseDTO.builder()
                 .userId(user.getUserId())
                 .accessToken(jwtUtils.generateJwtAccessToken(user.getEmail()))
                 .refreshToken(jwtUtils.generateJwtRefreshToken(user.getEmail()))
+                .user(appUserDTO)
                 .build();
         return response;
     }
@@ -59,14 +61,16 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.getContext()
                 .setAuthentication(authentication);
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        AppUser appUser = appUserService.getReference(userDetails.getId());
 
+        AppUserDTO appUserDTO = AppUserDTO.builder().userId(appUser.getUserId()).email(appUser.getEmail()).firstName(appUser.getFirstName()).lastName(appUser.getLastName()).build();
         AuthenticationResponseDTO authenticationResponseDTO = AuthenticationResponseDTO.builder()
                 .userId(userDetails.getId())
+                .user(appUserDTO)
                 .accessToken((jwtUtils.generateJwtAccessToken(userDetails.getUsername())))
                 .refreshToken(jwtUtils.generateJwtRefreshToken(userDetails.getUsername()))
                 .build();
 
-        AppUser appUser = appUserService.getReference(userDetails.getId());
         AppRefreshToken appRefreshToken = new AppRefreshToken();
         appRefreshToken.setRefreshToken((authenticationResponseDTO.getRefreshToken()));
         appRefreshToken.setAppUser(appUser);

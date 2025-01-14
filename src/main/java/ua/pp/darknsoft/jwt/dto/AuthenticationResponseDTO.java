@@ -8,6 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 public class AuthenticationResponseDTO {
     private Long userId;
+    private AppUserDTO user;
     private String accessToken;
     private String refreshToken;
+
 }
