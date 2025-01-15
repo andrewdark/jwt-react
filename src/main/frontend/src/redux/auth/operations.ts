@@ -6,6 +6,7 @@ import {ISignInRequest} from "../../models/auth/ISignInRequest";
 import {ISignUpResponse} from "../../models/auth/ISignUpResponse";
 import {ISignInResponse} from "../../models/auth/ISignInResponse";
 import {AuthResponse} from "../../models/auth/AuthResponse";
+import {IUser} from "../../models/IUser";
 
 // Utility to add JWT
 const setAuthHeader = (token: string) => {
@@ -86,7 +87,7 @@ export const refreshUser = createAsyncThunk(
         try {
             // If there is a token, add it to the HTTP header and perform the request
             setAuthHeader(persistedToken);
-            const res = await $api.get<AuthResponse>('/auth/refresh');
+            const res = await $api.get<IUser>('/user/me');
             return res.data;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.message);
