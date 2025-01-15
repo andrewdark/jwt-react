@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import css from './App.module.css';
 import {Routes, Route} from "react-router-dom";
 import {Layout} from "./hoc/Layout/Layout";
@@ -9,8 +9,14 @@ import {NotFoundPage} from "./pages/NotFoundPage/NotFoundPage";
 import {HomePage} from "./pages/HomePage/HomePage";
 import {RestrictedRoute} from "./hoc/RestrictedRoute/RestrictedRoute";
 import {PrivateRoute} from "./hoc/PrivateRoute/PrivateRoute";
+import {useAppDispatch} from "./hooks/redux";
+import {refreshUser} from "./redux/auth/operations";
 
 function App() {
+    const dispatch = useAppDispatch();
+    useEffect(() => {
+        dispatch(refreshUser());
+    }, [dispatch]);
     return (
         <Layout>
             <Routes>
