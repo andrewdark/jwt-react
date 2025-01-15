@@ -1,5 +1,10 @@
 import css from './HomePage.module.css';
+import UserList from "../../components/UserList/UserList";
+import {useDispatch} from "react-redux";
+import {refreshToken} from "../../redux/auth/slice";
+import {useAppDispatch} from "../../hooks/redux";
 export const HomePage = () => {
+    const dispatch = useAppDispatch();
     return (
         <div className={css.HomePage}>
             <h1>Home Sweet Home</h1>
@@ -7,6 +12,10 @@ export const HomePage = () => {
                 in 1985 on the album Theatre of Pain, and again in 1991 for the Decade of Decadence 81-91 compilation
                 album. It has been covered by several artists, most notably country singer Carrie Underwood, who
                 released her version as a single in 2009.</p>
+            <div>
+                <button onClick={()=>{dispatch(refreshToken("DAS-TOKEN"))}} >click</button>
+                <UserList />
+            </div>
         </div>
     );
 };

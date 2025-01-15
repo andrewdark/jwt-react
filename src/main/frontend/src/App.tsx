@@ -11,10 +11,13 @@ import {RestrictedRoute} from "./hoc/RestrictedRoute/RestrictedRoute";
 import {PrivateRoute} from "./hoc/PrivateRoute/PrivateRoute";
 import {useAppDispatch} from "./hooks/redux";
 import {refreshUser} from "./redux/auth/operations";
+import {myInter} from "./http";
+import {store} from "./redux/store";
 
 function App() {
     const dispatch = useAppDispatch();
     useEffect(() => {
+        myInter(store);
         dispatch(refreshUser());
     }, [dispatch]);
     return (

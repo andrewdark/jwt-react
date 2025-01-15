@@ -26,16 +26,21 @@ const initialState: AuthState = {
 export const authSlice = createSlice({
     name: "auth",
     initialState,
-    reducers: {},
-    extraReducers: (builder:ActionReducerMapBuilder<AuthState>) => {
+    reducers: {
+        refreshToken(state, action: PayloadAction<string>) {
+            console.log("REFRESH AUTH STATE: ", action.payload);
+            state.accessToken = action.payload;
+        }
+    },
+    extraReducers: (builder: ActionReducerMapBuilder<AuthState>) => {
         builder
-            .addCase(register.fulfilled, (state: AuthState, action:PayloadAction<ISignUpResponse>) => {
-                state.userId =action.payload.userId;
+            .addCase(register.fulfilled, (state: AuthState, action: PayloadAction<ISignUpResponse>) => {
+                state.userId = action.payload.userId;
                 state.user = action.payload.user;
                 state.accessToken = action.payload.accessToken;
                 state.isLoggedIn = true;
             })
-            .addCase(logIn.fulfilled, (state: AuthState, action:PayloadAction<ISignInResponse>) => {
+            .addCase(logIn.fulfilled, (state: AuthState, action: PayloadAction<ISignInResponse>) => {
                 state.userId = action.payload.userId;
                 state.user = action.payload.user;
                 state.accessToken = action.payload.accessToken;
@@ -51,7 +56,7 @@ export const authSlice = createSlice({
             .addCase(refreshUser.pending, (state: AuthState) => {
                 state.isRefreshing = true;
             })
-            .addCase(refreshUser.fulfilled, (state: AuthState, action:PayloadAction<IUser>) => {
+            .addCase(refreshUser.fulfilled, (state: AuthState, action: PayloadAction<IUser>) => {
                 state.userId = action.payload.userId;
                 state.user = action.payload;
                 state.isLoggedIn = true;
@@ -65,3 +70,4 @@ export const authSlice = createSlice({
 })
 
 export const authReducer = authSlice.reducer;
+export const { refreshToken } = authSlice.actions;

@@ -4,12 +4,11 @@ import './index.css';
 import App from './App';
 import {createRoot} from "react-dom/client";
 import {HashRouter} from "react-router-dom"; //BrowserRouter
-import {setupStore} from "./redux/store";
+import {store} from "./redux/store";
 import {Provider} from "react-redux";
 import {PersistGate} from 'redux-persist/integration/react';
 import {persistStore} from "redux-persist";
 
-const store = setupStore();
 const persistor = persistStore(store);
 
 const container = document.getElementById("root");

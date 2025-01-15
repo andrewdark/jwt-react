@@ -5,7 +5,7 @@ import {ISignUpRequest} from "../../models/auth/ISignUpRequest";
 import {ISignInRequest} from "../../models/auth/ISignInRequest";
 import {ISignUpResponse} from "../../models/auth/ISignUpResponse";
 import {ISignInResponse} from "../../models/auth/ISignInResponse";
-import {AuthResponse} from "../../models/auth/AuthResponse";
+import { isExpired, decodeToken } from "react-jwt";
 import {IUser} from "../../models/IUser";
 
 // Utility to add JWT
@@ -83,7 +83,10 @@ export const refreshUser = createAsyncThunk(
             // If there is no token, exit without performing any request
             return thunkAPI.rejectWithValue('Unable to fetch user');
         }
-
+        console.log("TOKEN EXPIRE: ", isExpired(persistedToken));
+        if(isExpired(persistedToken)){
+            return thunkAPI.rejectWithValue('Token expired');
+        }
         try {
             // If there is a token, add it to the HTTP header and perform the request
             setAuthHeader(persistedToken);
