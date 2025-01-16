@@ -1,12 +1,10 @@
-import {Formik, Form, Field, ErrorMessage} from 'formik';
+import {ErrorMessage, Field, Form, Formik} from 'formik';
 import * as Yup from "yup";
-import {useId} from "react";
+import {FC, useId} from "react";
 import css from './SignUpForm.module.css';
-import {useAppDispatch} from "../../hooks/redux";
-import {register} from "../../redux/auth/operations";
 import {ISignUpRequest} from "../../models/auth/ISignUpRequest";
 
-const initialValues:ISignUpRequest = {
+const initialValues: ISignUpRequest = {
     firstName: "",
     lastName: "",
     email: "",
@@ -22,8 +20,11 @@ const SignUpSchema = Yup.object().shape({
     confirmPassword: Yup.string().required("Required").oneOf([Yup.ref('password')], 'Passwords must match')
 });
 
-export const SignUpForm = () => {
-    const dispatch = useAppDispatch();
+interface FormProps {
+    loginHandler: (credentials: ISignUpRequest) => void;
+}
+
+export const SignUpForm: FC<FormProps> = (props) => {
     const firstNameFieldId = useId();
     const lastNameFieldId = useId();
     const emailFieldId = useId();
@@ -31,7 +32,7 @@ export const SignUpForm = () => {
     const confirmPasswordFieldId = useId();
 
     const handleSubmit = (values: ISignUpRequest, actions: any) => {
-        dispatch(register(values))
+        props.loginHandler(values);
         actions.resetForm();
     };
 
@@ -40,13 +41,15 @@ export const SignUpForm = () => {
             <Form className={css.form}>
                 <div className={css.fieldsGroup}>
                     {/*<label htmlFor={firstNameFieldId}>FirstName</label>*/}
-                    <Field id={firstNameFieldId} className={css.fInput} type="text" name="firstName" placeholder="First Name"/>
+                    <Field id={firstNameFieldId} className={css.fInput} type="text" name="firstName"
+                           placeholder="First Name"/>
                     <ErrorMessage className={css.error} name="firstName" component="span"/>
                 </div>
 
                 <div className={css.fieldsGroup}>
                     {/*<label htmlFor={lastNameFieldId}>LastName</label>*/}
-                    <Field id={lastNameFieldId} className={css.fInput} type="text" name="lastName" placeholder="Last Name"/>
+                    <Field id={lastNameFieldId} className={css.fInput} type="text" name="lastName"
+                           placeholder="Last Name"/>
                     <ErrorMessage className={css.error} name="lastName" component="span"/>
                 </div>
 
@@ -58,13 +61,15 @@ export const SignUpForm = () => {
 
                 <div className={css.fieldsGroup}>
                     {/*<label htmlFor={passwordFieldId}>Password</label>*/}
-                    <Field id={passwordFieldId} className={css.fInput} type="password" name="password" placeholder="Password"/>
+                    <Field id={passwordFieldId} className={css.fInput} type="password" name="password"
+                           placeholder="Password"/>
                     <ErrorMessage className={css.error} name="password" component="span"/>
                 </div>
 
                 <div className={css.fieldsGroup}>
                     {/*<label htmlFor={confirmPasswordFieldId}>ConfirmPassword</label>*/}
-                    <Field id={confirmPasswordFieldId} className={css.fInput} type="password" name="confirmPassword" placeholder="Confirm password"/>
+                    <Field id={confirmPasswordFieldId} className={css.fInput} type="password" name="confirmPassword"
+                           placeholder="Confirm password"/>
                     <ErrorMessage className={css.error} name="confirmPassword" component="span"/>
                 </div>
 

@@ -1,4 +1,4 @@
-import  css from './SignInPage.module.css';
+import css from './SignInPage.module.css';
 import {SignInForm} from "../../components/SignInForm/SignInForm";
 import {NavLink} from "react-router-dom";
 import {useAppDispatch} from "../../hooks/redux";
@@ -8,7 +8,7 @@ import {logIn} from "../../redux/auth/operations";
 export const SignInPage = () => {
     const dispatch = useAppDispatch();
 
-    const loginHandler = (credentials:ISignInRequest) =>{
+    const loginHandler = (credentials: ISignInRequest) => {
         dispatch(logIn(credentials));
     }
     return (
