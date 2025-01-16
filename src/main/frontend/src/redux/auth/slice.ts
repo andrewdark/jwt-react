@@ -1,8 +1,9 @@
 import {IUser} from "../../models/IUser";
 import {ActionReducerMapBuilder, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {logIn, logOut, refreshUser, register} from "./operations";
+import {logIn, logOut, refreshToken, refreshUser, register} from "./operations";
 import {ISignInResponse} from "../../models/auth/ISignInResponse";
 import {ISignUpResponse} from "../../models/auth/ISignUpResponse";
+import {AuthResponse} from "../../models/auth/AuthResponse";
 
 interface AuthState {
     userId: null | number,
@@ -27,10 +28,10 @@ export const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        refreshToken(state, action: PayloadAction<string>) {
-            console.log("REFRESH AUTH STATE: ", action.payload);
-            state.accessToken = action.payload;
-        }
+        // refreshToken(state, action: PayloadAction<string>) {
+        //     console.log("REFRESH AUTH STATE: ", action.payload);
+        //     state.accessToken = action.payload;
+        // }
     },
     extraReducers: (builder: ActionReducerMapBuilder<AuthState>) => {
         builder
@@ -64,10 +65,23 @@ export const authSlice = createSlice({
             })
             .addCase(refreshUser.rejected, (state: AuthState) => {
                 state.isRefreshing = false;
+            })
+            .addCase(refreshToken.pending, (state: AuthState) => {
+                state.isRefreshing = true;
+            })
+            .addCase(refreshToken.fulfilled, (state: AuthState, action: PayloadAction<AuthResponse>) => {
+                state.userId = action.payload.userId;
+                state.user = action.payload.user;
+                state.accessToken = action.payload.accessToken;
+                state.isLoggedIn = true;
+                state.isRefreshing = false;
+            })
+            .addCase(refreshToken.rejected, (state: AuthState) => {
+                state.isRefreshing = false;
             });
     },
 
 })
 
 export const authReducer = authSlice.reducer;
-export const { refreshToken } = authSlice.actions;
+//export const {refreshToken} = authSlice.actions;

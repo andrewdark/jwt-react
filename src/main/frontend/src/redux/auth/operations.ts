@@ -1,12 +1,14 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {$api} from "../../http";
+import {$api, BASE_URL} from "../../http";
 import {RootState} from "../store";
 import {ISignUpRequest} from "../../models/auth/ISignUpRequest";
 import {ISignInRequest} from "../../models/auth/ISignInRequest";
 import {ISignUpResponse} from "../../models/auth/ISignUpResponse";
 import {ISignInResponse} from "../../models/auth/ISignInResponse";
-import { isExpired, decodeToken } from "react-jwt";
+import {isExpired, decodeToken} from "react-jwt";
 import {IUser} from "../../models/IUser";
+import axios from "axios";
+import {AuthResponse} from "../../models/auth/AuthResponse";
 
 // Utility to add JWT
 const setAuthHeader = (token: string) => {
@@ -24,7 +26,7 @@ const clearAuthHeader = () => {
  */
 export const register = createAsyncThunk(
     'auth/register',
-    async (credentials:ISignUpRequest, thunkAPI) => {
+    async (credentials: ISignUpRequest, thunkAPI) => {
         try {
             const res = await $api.post<ISignUpResponse>('/auth/signup', credentials);
             // After successful registration, add the token to the HTTP header
@@ -42,7 +44,7 @@ export const register = createAsyncThunk(
  */
 export const logIn = createAsyncThunk(
     'auth/login',
-    async (credentials:ISignInRequest, thunkAPI) => {
+    async (credentials: ISignInRequest, thunkAPI) => {
         try {
             const res = await $api.post<ISignInResponse>('/auth/signin', credentials);
             // After successful login, add the token to the HTTP header
@@ -73,7 +75,7 @@ export const logOut = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
  * headers: Authorization: Bearer token
  */
 export const refreshUser = createAsyncThunk(
-    'auth/refresh',
+    'auth/refreshUser',
     async (_, thunkAPI) => {
         // Reading the token from the state via getState()
         const state: RootState = <RootState>thunkAPI.getState();
@@ -84,9 +86,9 @@ export const refreshUser = createAsyncThunk(
             return thunkAPI.rejectWithValue('Unable to fetch user');
         }
         console.log("TOKEN EXPIRE: ", isExpired(persistedToken));
-        if(isExpired(persistedToken)){
-            return thunkAPI.rejectWithValue('Token expired');
-        }
+        // if (isExpired(persistedToken)) {
+        //     return thunkAPI.rejectWithValue('Token expired');
+        // }
         try {
             // If there is a token, add it to the HTTP header and perform the request
             setAuthHeader(persistedToken);
@@ -97,3 +99,16 @@ export const refreshUser = createAsyncThunk(
         }
     }
 );
+
+export const refreshToken = createAsyncThunk(
+    'auth/refreshToken',
+    async (_, thunkAPI) => {
+        try {
+            const res = await axios.post<AuthResponse>(`${BASE_URL}/auth/refresh`, {withCredentials: true})
+            const persistedToken = res.data.accessToken
+            setAuthHeader(persistedToken);
+            return res.data;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    });

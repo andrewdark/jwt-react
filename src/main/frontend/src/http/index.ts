@@ -1,7 +1,7 @@
 import axios from "axios";
 import {AuthResponse} from "../models/auth/AuthResponse";
 import {AppStore} from "../redux/store";
-import {refreshToken} from "../redux/auth/slice";
+import {refreshToken} from "../redux/auth/operations";
 
 export const BASE_URL = "http://localhost:8080/api";
 
@@ -29,10 +29,7 @@ export const myInter = (store: AppStore) => {
         if (error.response.status == 401 && error.config && !error.config._isRetry) {
             originalRequest._isRetry = true;
             try {
-                const response = await axios.post<AuthResponse>(`${BASE_URL}/auth/refresh`, {withCredentials: true})
-                let accessToken = response.data.accessToken
-                store.dispatch(refreshToken(accessToken));
-                console.log("Refreshed: ", accessToken);
+               await store.dispatch(refreshToken());
                 return $api.request(originalRequest);
             } catch (e) {
                 console.log('НЕ АВТОРИЗОВАН')
