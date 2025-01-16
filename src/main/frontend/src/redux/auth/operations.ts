@@ -10,16 +10,6 @@ import {IUser} from "../../models/IUser";
 import axios from "axios";
 import {AuthResponse} from "../../models/auth/AuthResponse";
 
-// Utility to add JWT
-const setAuthHeader = (token: string) => {
-    $api.defaults.headers.common.Authorization = `Bearer ${token}`;
-};
-
-// Utility to remove JWT
-const clearAuthHeader = () => {
-    $api.defaults.headers.common.Authorization = '';
-};
-
 /*
  * POST @ /users/signup
  * body: { name, email, password }
@@ -29,8 +19,6 @@ export const register = createAsyncThunk(
     async (credentials: ISignUpRequest, thunkAPI) => {
         try {
             const res = await $api.post<ISignUpResponse>('/auth/signup', credentials);
-            // After successful registration, add the token to the HTTP header
-            setAuthHeader(res.data.accessToken);
             return res.data;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.message);
@@ -47,8 +35,6 @@ export const logIn = createAsyncThunk(
     async (credentials: ISignInRequest, thunkAPI) => {
         try {
             const res = await $api.post<ISignInResponse>('/auth/signin', credentials);
-            // After successful login, add the token to the HTTP header
-            setAuthHeader(res.data.accessToken);
             return res.data;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.message);
@@ -64,7 +50,7 @@ export const logOut = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
     try {
         await $api.post('/auth/logout');
         // After a successful logout, remove the token from the HTTP header
-        clearAuthHeader();
+        //clearAuthHeader();
     } catch (error: any) {
         return thunkAPI.rejectWithValue(error.message);
     }
@@ -91,7 +77,7 @@ export const refreshUser = createAsyncThunk(
         // }
         try {
             // If there is a token, add it to the HTTP header and perform the request
-            setAuthHeader(persistedToken);
+           // setAuthHeader(persistedToken); --> move to interceptor
             const res = await $api.get<IUser>('/user/me');
             return res.data;
         } catch (error: any) {
@@ -105,8 +91,7 @@ export const refreshToken = createAsyncThunk(
     async (_, thunkAPI) => {
         try {
             const res = await axios.post<AuthResponse>(`${BASE_URL}/auth/refresh`, {withCredentials: true})
-            const persistedToken = res.data.accessToken
-            setAuthHeader(persistedToken);
+            const persistedToken = res.data.accessToken;
             return res.data;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.message);
