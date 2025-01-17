@@ -1,6 +1,9 @@
 import React from 'react';
 import {fetchUsers} from "../../redux/users/operations";
 import {useAppDispatch, useAppSelector} from "../../hooks/redux";
+import List from "../List/List";
+import {IUser} from "../../models/IUser";
+import UserItem from "../UserItem/UserItem";
 
 const UserList = () => {
     const users = useAppSelector(state => state.userReducer.users);
@@ -15,14 +18,7 @@ const UserList = () => {
     return (
         <div>
             <button onClick={clickHandler}>Fetch user</button>
-            <ul>
-                {
-                    users.map(el => {
-                        return <li
-                            key={el.userId}>{el.userId + " | " + el.firstName + " | " + el.lastName + " | " + el.email}</li>
-                    })}
-
-            </ul>
+            <List items={users} renderItems={(user: IUser) => <UserItem user={user}/>}></List>
         </div>
     );
 };

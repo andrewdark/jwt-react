@@ -1,0 +1,9 @@
+.UserItem {
+    display: flex;
+    justify-content: space-around;
+}
+
+.UserItem > div {
+    text-align: center;
+    width: 25%;
+}
