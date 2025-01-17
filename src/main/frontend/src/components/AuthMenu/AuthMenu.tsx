@@ -10,7 +10,7 @@ export const AuthMenu: FC<AuthMenuProps> = (props) => {
     const dispatch = useAppDispatch();
     const userName:undefined|string = useAppSelector(state=> state.authReducer.user?.firstName)
     return (
-        <div >
+        <div className={css.AuthMenu}>
             <p className={css.username}>Welcome, {userName?userName:'NoName'}</p>
             <button type="button" onClick={() => dispatch(logOut())}>
                 Logout

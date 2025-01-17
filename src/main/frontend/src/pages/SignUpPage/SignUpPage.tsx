@@ -12,12 +12,15 @@ export const SignUpPage = () => {
         dispatch(logIn(credentials));
     }
     return (
-        <div className={css.loginWrap}>
-            <h2>Register</h2>
-            <SignUpForm loginHandler={loginHandler}/>
-            <NavLink className={css.link} to={`/sign-in`}>
-                Already registered? Login
-            </NavLink>
+        <div className={"container"}>
+            <div className={css.loginWrap}>
+                <h2>Register</h2>
+                <SignUpForm loginHandler={loginHandler}/>
+                <NavLink className={css.link} to={`/sign-in`}>
+                    Already registered? Login
+                </NavLink>
+            </div>
         </div>
+
     );
 };

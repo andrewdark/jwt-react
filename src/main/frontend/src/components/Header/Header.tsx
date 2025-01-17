@@ -7,13 +7,15 @@ import {AuthNav} from "../AuthNav/AuthNav";
 export const Header = () => {
     const isLoggedIn = useSelector(selectIsLoggedIn);
     return (
-        <div className={css.container}>
-            <header className={css.header}>
-                <div>Logo</div>
-                <div>
+
+        <header className={css.header}>
+            <div className={["container", css.container].join(' ')}>
+                <nav className={css.nav}>Logo</nav>
+                <div className={css.auth}>
                     {isLoggedIn ? <AuthMenu/> : <AuthNav/>}
                 </div>
-            </header>
-        </div>
+            </div>
+        </header>
+
     );
 };
