@@ -65,8 +65,8 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<AppUser> getAll(Pageable page) {
-        return appUserRepository.findAll(page);
+    public Page<AppUserDTO> getAll(Pageable page) {
+        return appUserRepository.findAll(page).map(appUserDTOConverter::convert);
     }
 
     @Override

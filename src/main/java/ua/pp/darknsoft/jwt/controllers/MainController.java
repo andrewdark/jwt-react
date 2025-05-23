@@ -1,10 +1,15 @@
 package ua.pp.darknsoft.jwt.controllers;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ua.pp.darknsoft.jwt.dto.AppUserDTO;
 import ua.pp.darknsoft.jwt.services.AppUserService;
 import ua.pp.darknsoft.jwt.utils.jwt.JwtUtils;
 
@@ -22,10 +27,10 @@ public class MainController {
     }
 
     @GetMapping(value = "/api/test")
-    public ResponseEntity<?> test() {
+    public ResponseEntity<Page<AppUserDTO>> test(Pageable pageable) {
 
-        Pageable page = Pageable.unpaged();
-        return ResponseEntity.ok(appUserService.getAll(page));
+        Page<AppUserDTO> people = appUserService.getAll(pageable);
+        return ResponseEntity.ok(people);
     }
 
     @GetMapping(value = "/api/sec")

@@ -15,7 +15,7 @@ public interface AppUserService {
    Boolean isExists(AppUser appUser);
    AppUser createAppUser(RegistrationRequestDTO registrationUser);
    public Page<AppUser> getAllDisabled(Pageable page);
-   Page<AppUser> getAll(Pageable page);
+   Page<AppUserDTO> getAll(Pageable page);
    Page<AppUser> getAllEnabled(Pageable page);
 
    AppUser getReference(Long id);
