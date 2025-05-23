@@ -3,6 +3,8 @@ package ua.pp.darknsoft.jwt.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -25,10 +27,13 @@ public class AppRole implements Serializable {
             @Pattern(regexp = "^[A-Z]")
     })
     private String roleName;
-    @NotNull
-    private LocalDateTime created = LocalDateTime.now();
     @Version
     private Long version;
     @OneToMany(mappedBy = "appRole")
     private Set<RoledUser> roledUsers = new HashSet<>();
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

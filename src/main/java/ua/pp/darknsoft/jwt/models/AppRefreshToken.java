@@ -3,6 +3,10 @@ package ua.pp.darknsoft.jwt.models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -20,8 +24,13 @@ public class AppRefreshToken {
     @Column(name = "ip_address", nullable = false)
     private String ipAddress;
 
-    @Column(name = "browser_fingerprint", nullable = false)
+    @Column(name = "browser_fingerprint")
     private String browserFingerprint;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @OneToOne
     @JoinColumn(name = "user_id", unique=true)

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -42,12 +44,15 @@ public class AppUser implements Serializable {
     private String encryptedPassword;
     @Column(name = "enabled", nullable = false)
     private Boolean enabled = true;
-    @NotNull
-    private LocalDateTime created = LocalDateTime.now();
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
     @Version
     private Long version;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "appUser")
     private Set<RoledUser> roledUsers = new HashSet<>();
