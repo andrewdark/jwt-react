@@ -1,5 +1,6 @@
 package ua.pp.darknsoft.jwt.controllers;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedModel;
@@ -24,6 +25,12 @@ public class MainController {
     public MainController(JwtUtils jwtUtils, AppUserService appUserService) {
         this.jwtUtils = jwtUtils;
         this.appUserService = appUserService;
+    }
+
+    //RUN REACTJS SINGLE PAGE -> build/index.html
+    @GetMapping("/")
+    public ClassPathResource homePage() {
+        return new ClassPathResource("build/index.html");
     }
 
     @GetMapping(value = "/api/test")
