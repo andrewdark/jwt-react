@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.pp.darknsoft.jwt.dto.AppUserDTO;
-import ua.pp.darknsoft.jwt.dto.AuthenticationResponseDTO;
-import ua.pp.darknsoft.jwt.models.AppUser;
 import ua.pp.darknsoft.jwt.services.AppUserService;
-import ua.pp.darknsoft.jwt.utils.jwt.JwtUtils;
 
 import java.util.Optional;
 
@@ -22,7 +19,6 @@ import java.util.Optional;
 public class UserController {
 
     private final AppUserService appUserService;
-
 
     public UserController(AppUserService appUserService) {
         this.appUserService = appUserService;
@@ -35,8 +31,9 @@ public class UserController {
         if (StringUtils.hasText(authKey) && authKey.startsWith("Bearer ")) {
             String accessToken = authKey.substring(7, authKey.length());
             Optional<AppUserDTO> appUserDTOOptional = appUserService.findByAccessToken(accessToken);
-           if (appUserDTOOptional.isPresent()) {return ResponseEntity.ok(appUserDTOOptional.get());
-           }else ResponseEntity.status(HttpStatus.NOT_FOUND).body("USER_NOT_FOUND_EXCEPTION");
+            if (appUserDTOOptional.isPresent()) {
+                return ResponseEntity.ok(appUserDTOOptional.get());
+            } else ResponseEntity.status(HttpStatus.NOT_FOUND).body("USER_NOT_FOUND_EXCEPTION");
         }
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

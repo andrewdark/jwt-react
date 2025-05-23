@@ -3,12 +3,12 @@ package ua.pp.darknsoft.jwt.controllers;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ua.pp.darknsoft.jwt.dto.AuthenticationRequestDTO;
@@ -25,6 +25,8 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping(value = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthController {
 
+    @Value("${app.jwt.jwtRefreshExpirationMs}")
+    private long jwtRefreshExpirationMs;
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
@@ -35,12 +37,12 @@ public class AuthController {
     public ResponseEntity<?> registration(@Valid @RequestBody RegistrationRequestDTO registrationRequestDTO, HttpServletResponse response) {
         if (Objects.isNull(registrationRequestDTO.getFirstName()) || Objects.isNull(registrationRequestDTO.getLastName()) || Objects.isNull(registrationRequestDTO.getEmail()) || Objects.isNull(registrationRequestDTO.getPassword())) {
             return ResponseEntity.badRequest()
-                    .body("Error: All field required");
+                    .body("Error: All fields required");
         }
         AuthenticationResponseDTO authenticationResponseDTO = authService.registration(registrationRequestDTO);
         if (Objects.isNull(authenticationResponseDTO)) return ResponseEntity.badRequest()
                 .body("Error: Username is already taken!");
-        //TODO: Set cookie with  RefreshToken ???????????????????????????????????????
+        //Set cookie with  RefreshToken
         if (Objects.nonNull(authenticationResponseDTO.getRefreshToken())) {
             response.addCookie(getRefreshTokenCookie(authenticationResponseDTO.getRefreshToken(), getRefreshMaxAge()));
         }
@@ -94,9 +96,8 @@ public class AuthController {
     }
 
     //UTILS PRIVATE
-    //TODO: consider duration with example.app.jwtRefreshExpirationMs
     private int getRefreshMaxAge() {
-        return (int) TimeUnit.DAYS.toSeconds(60);
+        return (int) TimeUnit.MILLISECONDS.toSeconds(jwtRefreshExpirationMs);
     }
 
     private Cookie getRefreshTokenCookie(String refreshToken, int maxAge) {
@@ -104,6 +105,7 @@ public class AuthController {
                 ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         Cookie cookie = new Cookie("refresh-token", refreshToken);
         cookie.setHttpOnly(true);
+        cookie.setSecure(false); // Set to true if using HTTPS
         cookie.setMaxAge(maxAge);
         URI uri = URI.create(baseUrl + "/api/auth/").normalize();
         cookie.setDomain(uri.getHost());

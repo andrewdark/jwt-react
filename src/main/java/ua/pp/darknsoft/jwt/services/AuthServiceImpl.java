@@ -43,14 +43,21 @@ public class AuthServiceImpl implements AuthService {
         }
         responseDTO.setEmail(responseDTO.getEmail().toLowerCase());
         responseDTO.setPassword(bCryptPasswordEncoder.encode(responseDTO.getPassword()));
-        AppUser user = appUserService.createAppUser(responseDTO);
-        AppUserDTO appUserDTO = AppUserDTO.builder().userId(user.getUserId()).email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).build();
+        AppUser appUser = appUserService.createAppUser(responseDTO);
+        AppUserDTO appUserDTO = AppUserDTO.builder().userId(appUser.getUserId()).email(appUser.getEmail()).firstName(appUser.getFirstName()).lastName(appUser.getLastName()).build();
         AuthenticationResponseDTO response = AuthenticationResponseDTO.builder()
-                .userId(user.getUserId())
-                .accessToken(jwtUtils.generateJwtAccessToken(user.getEmail()))
-                .refreshToken(jwtUtils.generateJwtRefreshToken(user.getEmail()))
+                .userId(appUser.getUserId())
+                .accessToken(jwtUtils.generateJwtAccessToken(appUser.getEmail()))
+                .refreshToken(jwtUtils.generateJwtRefreshToken(appUser.getEmail()))
                 .user(appUserDTO)
                 .build();
+        AppRefreshToken appRefreshToken = new AppRefreshToken();
+        appRefreshToken.setRefreshToken((response.getRefreshToken()));
+        appRefreshToken.setAppUser(appUser);
+        appRefreshToken.setIpAddress("172.0.0.1");
+        appRefreshToken.setBrowserFingerprint("NO-INFORMATION");
+        appRefreshTokenService.save(appRefreshToken);
+
         return response;
     }
 
